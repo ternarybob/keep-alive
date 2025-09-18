@@ -92,12 +92,21 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-# Change to project root directory
-cd "$(dirname "$(dirname "$0")")"
+# Change to project root directory (equivalent to PowerShell's Push-Location)
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
+cd "$PROJECT_ROOT"
 
 echo -e "${CYAN}Keep-Alive Tool Build Script (macOS)${NC}"
 echo -e "${YELLOW}Environment: $ENVIRONMENT${NC}"
 echo "Current Location: $(pwd)"
+
+# Verify we're in the right directory (should contain main.go)
+if [[ ! -f "main.go" ]]; then
+    echo -e "${RED}Error: main.go not found. Are you running this from the project root or scripts directory?${NC}"
+    echo "Expected to find main.go in: $(pwd)"
+    exit 1
+fi
 
 # Validate environment
 case $ENVIRONMENT in
