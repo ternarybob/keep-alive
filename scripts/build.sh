@@ -247,7 +247,12 @@ if ! go "${BUILD_ARGS[@]}"; then
 fi
 
 # Make binary executable
-chmod +x "$OUTPUT_PATH"
+echo "Making binary executable..."
+if ! chmod +x "$OUTPUT_PATH"; then
+    echo -e "${RED}Warning: Failed to make binary executable${NC}"
+else
+    echo -e "${GREEN}Binary is now executable${NC}"
+fi
 
 # Display build results
 echo -e "\n${GREEN}Build successful!${NC}"
