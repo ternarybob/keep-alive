@@ -148,7 +148,7 @@ func _monitorKeyboard(keyboardChan chan struct{}) {
 			// If stdin is closed or there's an error, continue
 			continue
 		}
-		
+
 		// Check for quit commands
 		if input == "q" || input == "quit" || input == "exit" {
 			keyboardChan <- struct{}{}

@@ -8,7 +8,9 @@ A simple cross-platform command-line tool that prevents screen lock by simulatin
 - Cross-platform support (macOS and Windows)
 - Non-intrusive: moves mouse by 1 pixel and returns to original position
 - Does not interfere with real mouse/keyboard movements
-- Graceful shutdown with Ctrl+C
+- Dual quit methods: Ctrl+C or type 'q' and press Enter
+- Enhanced macOS support with cliclick integration (no accessibility permissions needed)
+- Automatic fallback to AppleScript if cliclick not installed
 - Multiple architecture support (AMD64, ARM64)
 
 ## Installation
@@ -42,15 +44,27 @@ Download the appropriate binary from the [Releases](../../releases) page:
 $ ./keep-alive-tool-darwin-universal
 Keep-Alive Tool
 ===============
+Version: 1.0.0
+Build: 2025-09-18 11:01:17 (dev)
+Platform: darwin/arm64
 Simulating user activity every 30s to prevent screen lock
-Platform: darwin
-Press Ctrl+C to stop
+Press Ctrl+C to stop, or type 'q' and press Enter to quit
+
+macOS detected - Using cliclick for mouse simulation
+Note: If mouse movement fails, install cliclick: brew install cliclick
 
 Starting keep-alive simulation...
 [14:30:15] Simulated mouse activity
 [14:30:45] Simulated mouse activity
+
+# User can quit by:
+# 1. Pressing Ctrl+C
 ^C
 Shutdown signal received. Stopping keep-alive tool...
+
+# 2. Or typing 'q' and pressing Enter
+q
+Keyboard quit received. Stopping keep-alive tool...
 ```
 
 ## Building from Source
