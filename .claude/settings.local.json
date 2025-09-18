@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(go mod:*)",
+      "Bash(go build:*)",
+      "Read(//c/development/ternarybob/gitsync/scripts/**)",
+      "Read(//c/development/ternarybob/gitsync/**)",
+      "Bash(powershell:*)",
+      "Bash(.binkeep-alive-tool.exe)",
+      "Bash(./bin/keep-alive-tool.exe)",
+      "Bash(timeout:*)",
+      "Bash(gofmt:*)",
+      "Bash(git add:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
