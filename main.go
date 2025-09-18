@@ -30,11 +30,18 @@ func main() {
 	fmt.Println("Press Ctrl+C to stop")
 	fmt.Println()
 
-	// Check if running on supported OS
-	if runtime.GOOS != "darwin" && runtime.GOOS != "windows" {
+	// Check if running on supported OS and show platform-specific info
+	switch runtime.GOOS {
+	case "darwin":
+		fmt.Println("macOS detected - Using cliclick for mouse simulation")
+		fmt.Println("Note: If mouse movement fails, install cliclick: brew install cliclick")
+	case "windows":
+		fmt.Println("Windows detected - Using PowerShell with Windows API")
+	default:
 		fmt.Printf("Error: This tool supports macOS and Windows only (detected: %s)\n", runtime.GOOS)
 		os.Exit(1)
 	}
+	fmt.Println()
 
 	// Create channel to listen for interrupt signals
 	sigChan := make(chan os.Signal, 1)
@@ -63,18 +70,25 @@ func _simulateActivity() {
 
 	switch runtime.GOOS {
 	case "darwin":
-		// macOS: Use AppleScript
-		script := `
-			tell application "System Events"
-				set currentPos to (get position of mouse)
-				set mouseX to item 1 of currentPos
-				set mouseY to item 2 of currentPos
-				set mouse position to {mouseX + 1, mouseY + 1}
-				delay 0.01
-				set mouse position to {mouseX, mouseY}
-			end tell
-		`
-		cmd = exec.Command("osascript", "-e", script)
+		// macOS: Try cliclick first (most reliable), fallback to AppleScript
+		// Check if cliclick is available
+		if _, err := exec.LookPath("cliclick"); err == nil {
+			// Use cliclick - more reliable and doesn't require accessibility permissions
+			cmd = exec.Command("cliclick", "m:r:1,1", "w:10", "m:r:-1,-1")
+		} else {
+			// Fallback to AppleScript (requires accessibility permissions)
+			script := `
+				tell application "System Events"
+					set currentPos to (get position of mouse)
+					set mouseX to item 1 of currentPos
+					set mouseY to item 2 of currentPos
+					set mouse position to {mouseX + 1, mouseY + 1}
+					delay 0.01
+					set mouse position to {mouseX, mouseY}
+				end tell
+			`
+			cmd = exec.Command("osascript", "-e", script)
+		}
 
 	case "windows":
 		// Windows: Use PowerShell with Windows API
@@ -106,7 +120,13 @@ func _simulateActivity() {
 	err = cmd.Run()
 
 	if err != nil {
-		fmt.Printf("[%s] Warning: Failed to simulate mouse activity: %v\n", time.Now().Format("15:04:05"), err)
+		timestamp := time.Now().Format("15:04:05")
+		if runtime.GOOS == "darwin" {
+			fmt.Printf("[%s] Warning: Failed to simulate mouse activity: %v\n", timestamp, err)
+			fmt.Printf("[%s] Troubleshooting: Try 'brew install cliclick' or grant accessibility permissions\n", timestamp)
+		} else {
+			fmt.Printf("[%s] Warning: Failed to simulate mouse activity: %v\n", timestamp, err)
+		}
 	} else {
 		fmt.Printf("[%s] Simulated mouse activity\n", time.Now().Format("15:04:05"))
 	}

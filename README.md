@@ -68,10 +68,16 @@ go build .
 ## How it Works
 
 ### macOS
-Uses AppleScript via `osascript` to:
+Primary method uses `cliclick` (recommended):
+1. Install cliclick: `brew install cliclick`
+2. Moves mouse 1 pixel relative, waits 10ms, then moves back
+3. No accessibility permissions required
+
+Fallback method uses AppleScript via `osascript`:
 1. Get the current mouse position
 2. Move the mouse 1 pixel diagonally
 3. Immediately return it to the original position
+4. **Requires**: System Preferences → Security & Privacy → Privacy → Accessibility → Add Terminal
 
 ### Windows
 Uses PowerShell with Windows API calls to:

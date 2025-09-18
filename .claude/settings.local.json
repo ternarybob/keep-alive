@@ -17,7 +17,8 @@
       "Read(//c/Users/bobmc/Pictures/Screenshots 1/**)",
       "Bash(git tag:*)",
       "Bash(chmod:*)",
-      "Bash(git update-index:*)"
+      "Bash(git update-index:*)",
+      "WebFetch(domain:github.com)"
     ],
     "deny": [],
     "ask": []
