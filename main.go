@@ -27,7 +27,7 @@ func main() {
 	fmt.Printf("Build: %s (%s)\n", BuildTime, Environment)
 	fmt.Printf("Platform: %s/%s\n", runtime.GOOS, runtime.GOARCH)
 	fmt.Printf("Simulating user activity every %v to prevent screen lock\n", defaultInterval)
-	fmt.Println("Press Ctrl+C to stop")
+	fmt.Println("Press Ctrl+C to stop, or type 'q' and press Enter to quit")
 	fmt.Println()
 
 	// Check if running on supported OS and show platform-specific info
@@ -47,6 +47,10 @@ func main() {
 	sigChan := make(chan os.Signal, 1)
 	signal.Notify(sigChan, syscall.SIGINT, syscall.SIGTERM)
 
+	// Create channel for keyboard input
+	keyboardChan := make(chan struct{}, 1)
+	go _monitorKeyboard(keyboardChan)
+
 	// Create ticker for periodic activity
 	ticker := time.NewTicker(defaultInterval)
 	defer ticker.Stop()
@@ -57,6 +61,9 @@ func main() {
 		select {
 		case <-sigChan:
 			fmt.Println("\nShutdown signal received. Stopping keep-alive tool...")
+			return
+		case <-keyboardChan:
+			fmt.Println("\nKeyboard quit received. Stopping keep-alive tool...")
 			return
 		case <-ticker.C:
 			_simulateActivity()
@@ -74,7 +81,7 @@ func _simulateActivity() {
 		// Check if cliclick is available
 		if _, err := exec.LookPath("cliclick"); err == nil {
 			// Use cliclick - more reliable and doesn't require accessibility permissions
-			cmd = exec.Command("cliclick", "m:r:1,1", "w:10", "m:r:-1,-1")
+			cmd = exec.Command("cliclick", "m:+1,+1", "w:10", "m:-1,-1")
 		} else {
 			// Fallback to AppleScript (requires accessibility permissions)
 			script := `
@@ -129,5 +136,23 @@ func _simulateActivity() {
 		}
 	} else {
 		fmt.Printf("[%s] Simulated mouse activity\n", time.Now().Format("15:04:05"))
+	}
+}
+
+// _monitorKeyboard monitors for 'q' input to quit the program
+func _monitorKeyboard(keyboardChan chan struct{}) {
+	for {
+		var input string
+		// Read line from stdin
+		if _, err := fmt.Scanln(&input); err != nil {
+			// If stdin is closed or there's an error, continue
+			continue
+		}
+		
+		// Check for quit commands
+		if input == "q" || input == "quit" || input == "exit" {
+			keyboardChan <- struct{}{}
+			return
+		}
 	}
 }
