@@ -22,8 +22,8 @@ Keep-Alive Tool is a cross-platform Go application that prevents screen lock by 
 ## Development Commands
 
 ### Building
-Use the PowerShell build script for all builds:
 
+#### Windows (PowerShell)
 ```powershell
 # Development build (default amd64)
 .\scripts\build.ps1
@@ -36,6 +36,22 @@ Use the PowerShell build script for all builds:
 
 # Clean build with verbose output
 .\scripts\build.ps1 -Clean -Verbose -Environment prod
+```
+
+#### macOS (Bash)
+```bash
+# Development build (auto-detects architecture)
+./scripts/build.sh
+
+# Release build with tests
+./scripts/build.sh --release --test
+
+# Build for specific architecture
+./scripts/build.sh --arch arm64 --release  # Apple Silicon
+./scripts/build.sh --arch amd64 --release  # Intel Mac
+
+# Clean build with verbose output
+./scripts/build.sh --clean --verbose --environment prod
 ```
 
 ### Testing
