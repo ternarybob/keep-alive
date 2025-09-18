@@ -10,7 +10,9 @@
       "Bash(./bin/keep-alive-tool.exe)",
       "Bash(timeout:*)",
       "Bash(gofmt:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)"
     ],
     "deny": [],
     "ask": []
