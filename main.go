@@ -79,9 +79,9 @@ func _simulateActivity() {
 	case "darwin":
 		// macOS: Try cliclick first (most reliable), fallback to AppleScript
 		// Check if cliclick is available
-		if _, err := exec.LookPath("cliclick"); err == nil {
+		if cliclickPath, err := exec.LookPath("cliclick"); err == nil {
 			// Use cliclick - more reliable and doesn't require accessibility permissions
-			cmd = exec.Command("cliclick", "m:+1,+1", "w:10", "m:-1,-1")
+			cmd = exec.Command(cliclickPath, "m:+1,+1", "w:10", "m:-1,-1")
 		} else {
 			// Fallback to AppleScript (requires accessibility permissions)
 			script := `
